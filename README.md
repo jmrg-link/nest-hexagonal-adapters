@@ -18,6 +18,8 @@ y que responde por REST y por GraphQL sin duplicar ni una regla de negocio.
 <img alt="Sequelize 6" src="https://img.shields.io/static/v1?label=Sequelize&message=6&color=52B0E7&logo=sequelize&logoColor=white" />
 <img alt="Licencia MIT" src="https://img.shields.io/static/v1?label=licencia&message=MIT&color=blue" />
 
+**[🌐 Diagramas interactivos](https://jmrg-link.github.io/nest-hexagonal-adapters/)** · **[jmrg.dev](https://jmrg.dev)**
+
 [Arranque rápido](#arranque-rápido) · [Explorar la API](#explorar-la-api) · [Diagramas](docs/diagrams/README.md) · [Capturas](docs/capturas/queries-graphql.md) · [Documentación](#documentación) · [Autor](#autor)
 
 </div>
@@ -155,7 +157,7 @@ Prisma 7 todavía no soporta MongoDB (la documentación oficial recomienda Prism
 
 Material visual:
 
-- [**Diagramas interactivos**](docs/diagrams/README.md): arquitectura, secuencias REST y GraphQL, ciclo de vida del pedido, errores y dominio.
+- [**Diagramas interactivos**](https://jmrg-link.github.io/nest-hexagonal-adapters/) ([índice en el repo](docs/diagrams/README.md)): arquitectura, secuencias REST y GraphQL, ciclo de vida del pedido, errores y dominio.
 - [**Operaciones GraphQL con capturas**](docs/capturas/queries-graphql.md): las 13 operaciones y dos errores, ejecutadas en GraphiQL con variables, cabeceras y respuesta.
 
 Ficheros para importar o pegar:
@@ -196,6 +198,7 @@ Las carpetas de primer nivel gritan el negocio (`users`, `orders`, `auth`), no e
       <strong>Jesús María Rico González</strong><br/>
       Senior Full Stack Developer · Node.js, NestJS y arquitecturas limpias<br/>
       <a href="https://jmrg.dev">jmrg.dev</a> ·
+      <a href="https://jmrg-link.github.io/nest-hexagonal-adapters/">Diagramas del proyecto</a> ·
       <a href="https://github.com/jmrg-link">GitHub</a> ·
       <a href="https://www.linkedin.com/in/jesus-maria-rico-gonzalez/">LinkedIn</a>
     </td>

@@ -18,7 +18,7 @@ Cada operación con argumentos los recibe por **variables**. Cuando además est�
 [`docs/operations.graphql`](../operations.graphql) tiene las mismas operaciones con los valores escritos en la propia query, listas para pegar.
 
 > [!TIP]
-> El recorrido de estas peticiones por dentro está en los diagramas de [secuencia GraphQL](../diagrams/03-secuencia-graphql-estado-pedido.html) y [manejo de errores](../diagrams/05-manejo-de-errores.html).
+> El recorrido de estas peticiones por dentro está en los diagramas de [secuencia GraphQL](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/03-secuencia-graphql-estado-pedido.html) y [manejo de errores](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/05-manejo-de-errores.html).
 
 ## Índice
 

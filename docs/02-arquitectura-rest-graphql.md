@@ -1,7 +1,7 @@
 # 2. Arquitectura, capas, REST y GraphQL
 
 > [!TIP]
-> En visual: [arquitectura hexagonal](diagrams/01-arquitectura-hexagonal.html), [secuencia REST](diagrams/02-secuencia-rest-crear-pedido.html), [secuencia GraphQL](diagrams/03-secuencia-graphql-estado-pedido.html) y [ciclo de vida del pedido](diagrams/04-ciclo-de-vida-pedido.html) ([vistas previas](diagrams/README.md)).
+> En visual: [arquitectura hexagonal](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/01-arquitectura-hexagonal.html), [secuencia REST](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/02-secuencia-rest-crear-pedido.html), [secuencia GraphQL](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/03-secuencia-graphql-estado-pedido.html) y [ciclo de vida del pedido](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/04-ciclo-de-vida-pedido.html) ([vistas previas](diagrams/README.md)).
 
 ## Screaming Architecture
 

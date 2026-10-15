@@ -95,7 +95,7 @@ query Orders($filter: OrderFilterInput) {
 
 ## Errores: mismo contrato en los dos transportes
 
-Todos los errores de negocio heredan de `DomainError` y llevan uno de seis códigos. `DomainErrorFilter` los traduce en la frontera según el transporte ([diagrama](diagrams/05-manejo-de-errores.html)):
+Todos los errores de negocio heredan de `DomainError` y llevan uno de seis códigos. `DomainErrorFilter` los traduce en la frontera según el transporte ([diagrama](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/05-manejo-de-errores.html)):
 
 | Código | HTTP en REST | Cuándo |
 |---|---|---|

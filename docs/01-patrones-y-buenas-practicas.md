@@ -3,7 +3,7 @@
 La idea central: **el negocio no sabe qué base de datos, qué ORM ni qué transporte hay debajo**. Depende de contratos (puertos) y la infraestructura los implementa (adaptadores). Cambiar MongoDB por PostgreSQL, o REST por GraphQL, no toca ni el dominio ni los casos de uso.
 
 > [!TIP]
-> En visual: [arquitectura hexagonal](diagrams/01-arquitectura-hexagonal.html) y [dominio y reglas de negocio](diagrams/06-dominio-y-reglas-de-negocio.html) ([vista previa](diagrams/README.md)).
+> En visual: [arquitectura hexagonal](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/01-arquitectura-hexagonal.html) y [dominio y reglas de negocio](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/06-dominio-y-reglas-de-negocio.html) ([vista previa](diagrams/README.md)).
 
 ## Patrones aplicados
 
@@ -17,7 +17,7 @@ La idea central: **el negocio no sabe qué base de datos, qué ORM ni qué trans
 | **Criteria** | `user.criteria.ts`, `order.criteria.ts` | Consulta expresada en el dominio; cada adaptador la traduce a su lenguaje |
 | **Data Mapper** | `*.mapper.ts` | Convierte agregado ↔ documento, registro o fila sin contaminar el dominio |
 | **Aggregate + Value Object** | `Order` + `OrderItem`, `User` | Invariantes protegidas: total calculado, importe máximo, email normalizado |
-| **State** (tabla de transiciones) | `orders/domain/order-status.ts` | `pending → paid → shipped`, `cancelled`; sin `if` repartidos ([diagrama](diagrams/04-ciclo-de-vida-pedido.html)) |
+| **State** (tabla de transiciones) | `orders/domain/order-status.ts` | `pending → paid → shipped`, `cancelled`; sin `if` repartidos ([diagrama](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/04-ciclo-de-vida-pedido.html)) |
 | **Template Method** | `shared/infrastructure/in-memory/in-memory.repository.ts` | Algoritmo común; las subclases aportan `toSnapshot`, `toEntity` y `matches` |
 | **Presenter** | `user.presenter.ts`, `order.presenter.ts` | Lista blanca de campos públicos, compartida por REST y GraphQL |
 | **Chain of Responsibility** | Pipeline de Nest | Middleware → guards → interceptor → pipe → handler → filtro |

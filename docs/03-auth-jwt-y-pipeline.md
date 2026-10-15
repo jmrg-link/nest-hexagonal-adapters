@@ -1,7 +1,7 @@
 # 3. CRUD de usuarios con JWT (`jsonwebtoken`) y el pipeline de Nest por capas
 
 > [!TIP]
-> En visual: [secuencia REST con guards y Zod](diagrams/02-secuencia-rest-crear-pedido.html), [manejo de errores](diagrams/05-manejo-de-errores.html) y [políticas de acceso del dominio](diagrams/06-dominio-y-reglas-de-negocio.html) ([vistas previas](diagrams/README.md)).
+> En visual: [secuencia REST con guards y Zod](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/02-secuencia-rest-crear-pedido.html), [manejo de errores](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/05-manejo-de-errores.html) y [políticas de acceso del dominio](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/06-dominio-y-reglas-de-negocio.html) ([vistas previas](diagrams/README.md)).
 
 ## Piezas y capa de cada una
 
