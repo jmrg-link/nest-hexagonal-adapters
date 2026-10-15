@@ -3,7 +3,7 @@
 La idea central: **el negocio no sabe qué base de datos, qué ORM ni qué transporte hay debajo**. Depende de contratos (puertos) y la infraestructura los implementa (adaptadores). Cambiar MongoDB por PostgreSQL, o REST por GraphQL, no toca ni el dominio ni los casos de uso.
 
 > [!TIP]
-> En visual: [arquitectura hexagonal](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/01-arquitectura-hexagonal.html) y [dominio y reglas de negocio](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/06-dominio-y-reglas-de-negocio.html) ([vista previa](diagrams/README.md)).
+> Los diagramas de [arquitectura hexagonal](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/01-arquitectura-hexagonal.html) y [dominio y reglas de negocio](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/06-dominio-y-reglas-de-negocio.html) muestran lo mismo de forma visual ([vista previa](diagrams/README.md)).
 
 ## Patrones aplicados
 

@@ -7,7 +7,7 @@ pnpm build
 pnpm docs:generate
 ```
 
-Genera, sin base de datos (driver `memory`):
+El script arranca la aplicación con el driver `memory`, sin base de datos, y escribe dos ficheros:
 
 - `docs/openapi.json`: **OpenAPI 3.0** con todos los endpoints, parámetros y esquemas nombrados (`User`, `Order`, `CreateOrderRequest`...). Sale de los esquemas Zod de los controladores.
 - `docs/schema.gql`: el esquema GraphQL *code-first*, ordenado.
@@ -96,9 +96,9 @@ query Orders($filter: OrderFilterInput) {
 { "filter": { "minTotalCents": 1000, "maxTotalCents": 5000, "sort": "ASC" } }
 ```
 
-## Errores: mismo contrato en los dos transportes
+## Errores: el mismo formato en REST y en GraphQL
 
-Todos los errores de negocio heredan de `DomainError` y llevan uno de seis códigos. `DomainErrorFilter` los traduce en la frontera según el transporte ([diagrama](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/05-manejo-de-errores.html)):
+Todos los errores de negocio heredan de `DomainError` y llevan uno de seis códigos. `DomainErrorFilter` los convierte en la respuesta de REST o de GraphQL ([diagrama](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/05-manejo-de-errores.html)):
 
 | Código | HTTP en REST | Cuándo |
 |---|---|---|
@@ -140,7 +140,7 @@ GraphQL:
 }
 ```
 
-Un error de negocio real en GraphiQL, una transición desde un pedido ya enviado:
+Así se ve en GraphiQL un error de negocio real, al intentar devolver a `PENDING` un pedido ya enviado:
 
 [![GraphiQL: error BUSINESS_RULE al cambiar un pedido SHIPPED a PENDING](capturas/imagenes/14-error-business-rule-variables.png)](capturas/queries-graphql.md#14-transición-no-permitida-business_rule)
 

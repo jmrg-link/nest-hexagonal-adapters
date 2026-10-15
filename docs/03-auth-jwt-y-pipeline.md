@@ -1,7 +1,7 @@
-# 3. CRUD de usuarios con JWT (`jsonwebtoken`) y el pipeline de Nest por capas
+# 3. Autenticación con JWT y el pipeline de Nest
 
 > [!TIP]
-> En visual: [secuencia REST con guards y Zod](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/02-secuencia-rest-crear-pedido.html), [manejo de errores](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/05-manejo-de-errores.html) y [políticas de acceso del dominio](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/06-dominio-y-reglas-de-negocio.html) ([vistas previas](diagrams/README.md)).
+> Los diagramas de [secuencia REST con guards y Zod](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/02-secuencia-rest-crear-pedido.html), [manejo de errores](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/05-manejo-de-errores.html) y [políticas de acceso del dominio](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/06-dominio-y-reglas-de-negocio.html) muestran lo mismo de forma visual ([vistas previas](diagrams/README.md)).
 
 ## Piezas y capa de cada una
 
@@ -15,7 +15,7 @@
 | `UsersService`: CRUD y reglas de propiedad | aplicación | `users/application/users.service.ts` |
 | `JwtAuthGuard`, `RolesGuard`, decoradores | presentación | `auth/presentation/*` |
 
-Se usa `jsonwebtoken` directamente (no `jose` ni `@nestjs/jwt`), detrás de un puerto. Cambiar a `jose` o a un KMS sería escribir otro adaptador de `TokenService`, sin tocar casos de uso ni guards.
+El token se firma con la librería `jsonwebtoken`, sin `@nestjs/jwt` ni `jose`, y el resto de la aplicación la usa a través de un puerto. Cambiar a `jose` o a un KMS solo exigiría escribir otro adaptador de `TokenService`; los casos de uso y los guards no cambiarían.
 
 ## Emisión y verificación del token
 
@@ -28,20 +28,20 @@ verify(token, secret, { algorithms: ['HS256'], issuer, audience });
 claimsSchema.parse(payload);
 ```
 
-- **Algoritmo fijado al verificar** para evitar la confusión de `alg` (por ejemplo `none` o RS/HS).
-- **`iss` y `aud`** evitan aceptar tokens emitidos para otra API.
-- **Caducidad corta** (15 minutos por defecto, `JWT_EXPIRES_IN_SECONDS`).
-- **Claims validados con Zod**: no se confía en un JSON solo porque la firma sea correcta.
-- **Secreto de al menos 32 caracteres**, exigido por la validación del entorno.
+- Al verificar se exige HS256, así que no se acepta un token que declare otro algoritmo, como `none` o uno asimétrico.
+- `iss` y `aud` identifican a esta API: un token emitido para otra se rechaza.
+- El token caduca a los 15 minutos por defecto (`JWT_EXPIRES_IN_SECONDS`).
+- El contenido del token se valida con Zod después de comprobar la firma, en lugar de dar por bueno cualquier JSON firmado.
+- El secreto debe tener al menos 32 caracteres; si no, la aplicación no arranca.
 
 ## Contraseñas
 
-- `scrypt` con sal aleatoria de 16 bytes y coste configurable (`SCRYPT_COST`; OWASP recomienda 2^17).
-- Formato autodescriptivo `scrypt$N$r$p$sal$clave`: se puede subir el coste sin invalidar hashes antiguos.
-- Comparación en tiempo constante (`timingSafeEqual`).
-- El hash nunca sale de la aplicación: el presenter es una lista blanca de campos.
+- Se guardan con `scrypt`, una sal aleatoria de 16 bytes y un coste configurable (`SCRYPT_COST`; OWASP recomienda 2^17).
+- Cada hash guarda sus propios parámetros (`scrypt$N$r$p$sal$clave`), así que se puede subir el coste sin invalidar las contraseñas que ya existen.
+- La comparación tarda lo mismo acierte o falle (`timingSafeEqual`), para no dar pistas por el tiempo de respuesta.
+- El hash nunca se devuelve: el presenter solo expone una lista cerrada de campos.
 
-## Flujo completo
+## Recorrido de una petición autenticada
 
 ```mermaid
 sequenceDiagram
@@ -65,26 +65,26 @@ sequenceDiagram
   S->>S: assertCanAccess (propietario o admin)
   S-->>H: User
   H-->>C: 200 toUserView(user)
-  Note over F: Cualquier DomainError en cualquier eslabón<br/>→ Problem Details (REST) o extensions.code (GraphQL)
+  Note over F: Si cualquier paso lanza un DomainError,<br/>se responde con Problem Details (REST) o extensions.code (GraphQL)
 ```
 
-## El pipeline de Nest, eslabón a eslabón
+## El pipeline de Nest, paso a paso
 
-| Orden | Eslabón | Aquí | Responsabilidad | Registro |
+| Orden | Tipo | Clase | Qué hace | Dónde se registra |
 |---|---|---|---|---|
-| 1 | **Middleware** | `RequestIdMiddleware` | Correlación: `x-request-id` | `AppModule.configure()` |
-| 2 | **Guard** | `JwtAuthGuard` | ¿Quién eres? (autenticación) | `APP_GUARD` en `AuthModule` |
-| 3 | **Guard** | `RolesGuard` | ¿Qué rol tienes? (RBAC) | `APP_GUARD`, después del anterior |
-| 4 | **Interceptor** | `LoggingInterceptor` | Log con requestId y duración (AOP) | `APP_INTERCEPTOR` |
-| 5 | **Pipe** | `StandardSchemaValidationPipe` / `ArgsSchemaPipe` | Validación y transformación con Zod | `APP_PIPE` (REST) y por argumento (GraphQL) |
-| 6 | **Handler** | Controller o resolver | Traduce transporte ↔ caso de uso | — |
-| 7 | **Filtro** | `DomainErrorFilter` | Error de dominio → HTTP/GraphQL | `APP_FILTER` |
+| 1 | **Middleware** | `RequestIdMiddleware` | Asigna un `x-request-id` para seguir la petición en los logs | `AppModule.configure()` |
+| 2 | **Guard** | `JwtAuthGuard` | Comprueba el token (autenticación) | `APP_GUARD` en `AuthModule` |
+| 3 | **Guard** | `RolesGuard` | Comprueba el rol (RBAC) | `APP_GUARD`, después del anterior |
+| 4 | **Interceptor** | `LoggingInterceptor` | Registra cada petición con su requestId y su duración | `APP_INTERCEPTOR` |
+| 5 | **Pipe** | `StandardSchemaValidationPipe` / `ArgsSchemaPipe` | Valida y transforma la entrada con Zod | `APP_PIPE` (REST) y por argumento (GraphQL) |
+| 6 | **Handler** | Controller o resolver | Pasa la petición al caso de uso y devuelve su resultado | — |
+| 7 | **Filtro** | `DomainErrorFilter` | Convierte el error de dominio en respuesta HTTP o GraphQL | `APP_FILTER` |
 
-Dos niveles de autorización, cada uno en su capa:
+La autorización se comprueba en dos sitios:
 - **Por rol** (presentación): `@Roles('admin')` + `RolesGuard`.
-- **Por propiedad del recurso** (aplicación): `assertCanAccess(principal, ownerId)`, porque necesita cargar el recurso.
+- **Por propiedad del recurso** (aplicación): `assertCanAccess(principal, ownerId)`. Va en el servicio porque antes hay que cargar el recurso para saber de quién es.
 
-Guards, decoradores e interceptor funcionan igual en REST y GraphQL gracias a `getRequest(context)` en `shared/presentation/request-context.ts`.
+Guards, decoradores e interceptor sirven para REST y para GraphQL porque obtienen la petición con `getRequest(context)` (`shared/presentation/request-context.ts`), que funciona en los dos.
 
 ## Reglas del CRUD de usuarios
 
@@ -125,7 +125,9 @@ mutation { updateUser(id: "<id>", input: { name: "Ana María" }) { id name updat
 
 Cabecera HTTP en GraphiQL o Postman: `{ "Authorization": "Bearer <token>" }`.
 
-## Siguientes pasos de seguridad (fuera del alcance, a propósito)
+## Mejoras de seguridad que no están implementadas
+
+Quedan fuera del alcance de este proyecto:
 
 - **Refresh tokens** con rotación y revocación, guardados como hash.
 - **Rate limiting** en login y registro (`@nestjs/throttler`, con un guard compatible con GraphQL).
