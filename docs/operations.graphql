@@ -1,0 +1,165 @@
+# ─────────────────────────────────────────────────────────────
+# Cómo usar este documento en GraphiQL
+# 1. Ejecuta Login y copia el accessToken.
+# 2. Pestaña Headers: { "Authorization": "Bearer <token>" }
+# 3. Pon el cursor dentro de una operación y pulsa ▶ (o Ctrl+Enter).
+#    Con varias operaciones, ▶ pregunta cuál ejecutar.
+# Los enums van en MAYÚSCULAS. Los importes, en céntimos.
+# ─────────────────────────────────────────────────────────────
+
+# ── Autenticación (públicas, sin token) ──
+
+# Alta pública: siempre crea un cliente (role CUSTOMER).
+mutation Register {
+  register(input: { email: "nuevo@example.com", name: "Cliente Nuevo", password: "supersecret" }) {
+    id
+    email
+    role
+  }
+}
+
+# Devuelve el JWT. Caduca a los 900 s (JWT_EXPIRES_IN_SECONDS).
+# Admin: ADMIN_EMAIL / ADMIN_PASSWORD. Clientes del seed: *@example.com / SEED_PASSWORD.
+mutation Login {
+  login(input: { email: "admin@example.com", password: "PEGA_LA_CONTRASEÑA" }) {
+    accessToken
+    tokenType
+    expiresIn
+  }
+}
+
+# ── Perfil (cualquier usuario autenticado) ──
+
+# Quién soy según el token.
+query Me {
+  me {
+    id
+    email
+    name
+    role
+    createdAt
+  }
+}
+
+# ── Usuarios ──
+
+# Listado paginado. Solo ADMIN. role es opcional (ADMIN | CUSTOMER).
+query Users {
+  users(filter: { role: CUSTOMER, page: 1, limit: 10, sort: DESC }) {
+    total
+    page
+    limit
+    items {
+      id
+      email
+      name
+      role
+      createdAt
+    }
+  }
+}
+
+# Un usuario: el propio o cualquiera si eres ADMIN. El id es un UUID.
+query User {
+  user(id: "PEGA-UN-UUID-DE-USUARIO") {
+    id
+    email
+    name
+    role
+  }
+}
+
+# Alta de usuario con rol. Solo ADMIN.
+mutation CreateUser {
+  createUser(input: { email: "staff@example.com", name: "Staff", password: "supersecret", role: ADMIN }) {
+    id
+    email
+    role
+  }
+}
+
+# Edición parcial (al menos un campo). El rol solo lo cambia un ADMIN.
+mutation UpdateUser {
+  updateUser(id: "PEGA-UN-UUID-DE-USUARIO", input: { name: "Nombre Editado" }) {
+    id
+    name
+    updatedAt
+  }
+}
+
+# Baja. Solo ADMIN. Sus pedidos se conservan.
+mutation DeleteUser {
+  deleteUser(id: "PEGA-UN-UUID-DE-USUARIO")
+}
+
+# ── Pedidos ──
+
+# Listado con filtros ESR: igualdad (userId, status), orden (createdAt), rango (total).
+# Un cliente solo ve los suyos; userId solo lo aplica un ADMIN.
+# Todos los campos del filtro son opcionales: borra los que no uses.
+query Orders {
+  orders(filter: { status: PAID, minTotalCents: 1000, maxTotalCents: 100000, sort: DESC, page: 1, limit: 10 }) {
+    total
+    page
+    limit
+    items {
+      id
+      userId
+      status
+      totalCents
+      createdAt
+      items {
+        sku
+        name
+        quantity
+        unitPriceCents
+        subtotalCents
+      }
+    }
+  }
+}
+
+# Un pedido: el propio o cualquiera si eres ADMIN.
+query Order {
+  order(id: "PEGA-UN-UUID-DE-PEDIDO") {
+    id
+    status
+    totalCents
+    items {
+      sku
+      quantity
+      subtotalCents
+    }
+  }
+}
+
+# Crea un pedido para el usuario del token. Nace en PENDING; el total lo calcula el dominio.
+mutation CreateOrder {
+  createOrder(input: { items: [
+    { sku: "KB-001", name: "Teclado mecánico", quantity: 1, unitPriceCents: 8900 },
+    { sku: "CB-004", name: "Cable USB-C", quantity: 2, unitPriceCents: 990 }
+  ] }) {
+    id
+    status
+    totalCents
+    items {
+      sku
+      subtotalCents
+    }
+  }
+}
+
+# Cambia el estado: PENDING → PAID → SHIPPED; PENDING o PAID → CANCELLED.
+# Un cliente solo puede cancelar los suyos; el resto de transiciones son de ADMIN.
+mutation UpdateOrderStatus {
+  updateOrderStatus(id: "PEGA-UN-UUID-DE-PEDIDO", input: { status: PAID }) {
+    id
+    status
+    updatedAt
+  }
+}
+
+# Borra un pedido. Solo ADMIN.
+mutation DeleteOrder {
+  deleteOrder(id: "PEGA-UN-UUID-DE-PEDIDO")
+}

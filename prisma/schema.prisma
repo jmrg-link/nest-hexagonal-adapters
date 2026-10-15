@@ -1,0 +1,70 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "cjs"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  admin
+  customer
+
+  @@map("role")
+}
+
+enum OrderStatus {
+  pending
+  paid
+  shipped
+  cancelled
+
+  @@map("order_status")
+}
+
+/// Usuarios. Índice ESR: role (E) + created_at DESC (S) para el listado del backoffice.
+model User {
+  id           String   @id @db.Uuid
+  email        String   @unique
+  name         String
+  passwordHash String   @map("password_hash")
+  role         Role
+  createdAt    DateTime @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime @map("updated_at") @db.Timestamptz(3)
+
+  @@index([role, createdAt(sort: Desc)])
+  @@map("users")
+}
+
+/// Pedidos. user_id referencia al agregado User solo por identidad (sin FK entre agregados).
+/// Índices ESR: user_id, status (E) + created_at DESC (S) + total_cents (R).
+model Order {
+  id         String      @id @db.Uuid
+  userId     String      @map("user_id") @db.Uuid
+  status     OrderStatus
+  totalCents Int         @map("total_cents")
+  createdAt  DateTime    @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime    @map("updated_at") @db.Timestamptz(3)
+  items      OrderItem[]
+
+  @@index([userId, status, createdAt(sort: Desc), totalCents])
+  @@index([userId, createdAt(sort: Desc), totalCents])
+  @@map("orders")
+}
+
+/// Líneas de pedido: tabla hija con PK compuesta (order_id, position) y borrado en cascada.
+model OrderItem {
+  orderId        String @map("order_id") @db.Uuid
+  position       Int
+  sku            String
+  name           String
+  quantity       Int
+  unitPriceCents Int    @map("unit_price_cents")
+  order          Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@id([orderId, position])
+  @@map("order_items")
+}

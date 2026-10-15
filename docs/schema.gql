@@ -1,0 +1,173 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AccessToken {
+  accessToken: String!
+  expiresIn: Int!
+  tokenType: String!
+}
+
+input CreateOrderInput {
+  items: [OrderItemInput!]!
+}
+
+input CreateUserInput {
+  email: String!
+  name: String!
+  password: String!
+  role: Role
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  """Crea un pedido para la identidad autenticada"""
+  createOrder(input: CreateOrderInput!): Order!
+
+  """Alta de usuario (admin)"""
+  createUser(input: CreateUserInput!): User!
+
+  """Elimina un pedido (admin)"""
+  deleteOrder(id: ID!): Boolean!
+
+  """Baja de usuario (admin)"""
+  deleteUser(id: ID!): Boolean!
+
+  """Devuelve un JWT de acceso"""
+  login(input: LoginInput!): AccessToken!
+
+  """Registro público de clientes"""
+  register(input: RegisterInput!): User!
+
+  """Cambia el estado; el cliente solo puede cancelar"""
+  updateOrderStatus(id: ID!, input: UpdateOrderStatusInput!): Order!
+
+  """Edición parcial; el rol solo lo cambia admin"""
+  updateUser(id: ID!, input: UpdateUserInput!): User!
+}
+
+type Order {
+  createdAt: DateTime!
+  id: ID!
+  items: [OrderItem!]!
+  status: OrderStatus!
+  totalCents: Int!
+  updatedAt: DateTime!
+  userId: ID!
+}
+
+input OrderFilterInput {
+  limit: Int
+  maxTotalCents: Int
+  minTotalCents: Int
+  page: Int
+  sort: SortDirection
+  status: OrderStatus
+  userId: ID
+}
+
+type OrderItem {
+  name: String!
+  quantity: Int!
+  sku: String!
+  subtotalCents: Int!
+  unitPriceCents: Int!
+}
+
+input OrderItemInput {
+  name: String!
+  quantity: Int!
+  sku: String!
+  unitPriceCents: Int!
+}
+
+type OrderPage {
+  items: [Order!]!
+  limit: Int!
+  page: Int!
+  total: Int!
+}
+
+enum OrderStatus {
+  CANCELLED
+  PAID
+  PENDING
+  SHIPPED
+}
+
+type Query {
+  """Perfil de la identidad autenticada"""
+  me: User!
+
+  """Pedido propio o cualquiera (admin)"""
+  order(id: ID!): Order!
+
+  """Listado con filtros ESR"""
+  orders(filter: OrderFilterInput = {}): OrderPage!
+
+  """Usuario propio o cualquiera (admin)"""
+  user(id: ID!): User!
+
+  """Listado paginado (admin)"""
+  users(filter: UserFilterInput = {}): UserPage!
+}
+
+input RegisterInput {
+  email: String!
+  name: String!
+  password: String!
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+enum SortDirection {
+  ASC
+  DESC
+}
+
+input UpdateOrderStatusInput {
+  status: OrderStatus!
+}
+
+input UpdateUserInput {
+  email: String
+  name: String
+  password: String
+  role: Role
+}
+
+"""Usuario sin datos sensibles"""
+type User {
+  createdAt: DateTime!
+  email: String!
+  id: ID!
+  name: String!
+  role: Role!
+  updatedAt: DateTime!
+}
+
+input UserFilterInput {
+  limit: Int
+  page: Int
+  role: Role
+  sort: SortDirection
+}
+
+type UserPage {
+  items: [User!]!
+  limit: Int!
+  page: Int!
+  total: Int!
+}
