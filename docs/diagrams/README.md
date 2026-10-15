@@ -1,6 +1,6 @@
 # Diagramas
 
-Seis diagramas interactivos que explican el proyecto, desde la estructura hasta el último error.
+Seis diagramas interactivos que explican cómo está construido el proyecto: su estructura, el recorrido de una petición, el ciclo de vida de un pedido y el manejo de errores.
 
 **[Ver los diagramas en la web →](https://jmrg-link.github.io/nest-hexagonal-adapters/)**
 
@@ -19,7 +19,7 @@ Entradas REST y GraphQL, pipeline de Nest, servicios, dominio con sus puertos y 
 
 ## 02 · Secuencia REST: crear pedido
 
-`POST /orders` de punta a punta: guards, validación Zod, `Order.create`, repositorio y `201 Created`, con las salidas 401, 400 y 422.
+El recorrido completo de `POST /orders`: guards, validación Zod, `Order.create`, repositorio y `201 Created`, con las salidas 401, 400 y 422.
 
 [![Secuencia REST: crear pedido](previews/02-secuencia-rest-crear-pedido.png)](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/02-secuencia-rest-crear-pedido.html)
 

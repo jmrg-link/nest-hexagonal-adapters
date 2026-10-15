@@ -2,8 +2,8 @@
 
 # Nest Hexagonal Adapters
 
-Una API de usuarios y pedidos que funciona igual sobre MongoDB o PostgreSQL,<br/>
-y que responde por REST y por GraphQL sin duplicar ni una regla de negocio.
+API de usuarios y pedidos que funciona con MongoDB o con PostgreSQL<br/>
+y se consulta por REST o por GraphQL. Las reglas de negocio se escriben una sola vez.
 
 <img alt="Node.js ≥24.9" src="https://img.shields.io/static/v1?label=Node.js&message=%E2%89%A524.9&color=5FA04E&logo=nodedotjs&logoColor=white" />
 <img alt="NestJS 12" src="https://img.shields.io/static/v1?label=NestJS&message=12&color=E0234E&logo=nestjs&logoColor=white" />
@@ -26,9 +26,9 @@ y que responde por REST y por GraphQL sin duplicar ni una regla de negocio.
 
 ## Qué es
 
-La idea es sencilla: el dominio (usuarios, pedidos y sus reglas) no sabe qué base de datos hay debajo ni por dónde llega la petición. Define unos contratos, los *puertos*, y cada tecnología los implementa con un *adaptador*. Cambiar de Mongo a Postgres es cambiar una variable de entorno, `DB_DRIVER`.
+El dominio (usuarios, pedidos y sus reglas) no sabe qué base de datos hay debajo ni por dónde llega la petición. Define unos contratos, los *puertos*, y cada tecnología los implementa con un *adaptador*. Cambiar de Mongo a Postgres es cambiar una variable de entorno, `DB_DRIVER`.
 
-Para demostrar que los cuatro adaptadores se portan igual, todos pasan **el mismo contrato de repositorio y los mismos tests e2e**, tanto por REST como por GraphQL.
+Los cuatro adaptadores pasan el mismo contrato de repositorio y los mismos tests e2e, por REST y por GraphQL. Así se comprueba que se comportan igual.
 
 [![Arquitectura hexagonal del proyecto](docs/diagrams/previews/01-arquitectura-hexagonal.png)](docs/diagrams/README.md)
 
@@ -131,9 +131,9 @@ E2E_DB_DRIVER=sequelize pnpm test:db test/e2e
 
 </details>
 
-## Versiones: última estable compatible, no ciegamente `latest`
+## Versiones de las dependencias
 
-Las dependencias se instalan con versión exacta (`pnpm add -E` para producción y `pnpm add -DE` para desarrollo). `pnpm outdated` muestra solo cuatro diferencias, todas deliberadas:
+Cada dependencia está en la última versión estable que es compatible con el resto, y se instala con versión exacta (`pnpm add -E` para producción y `pnpm add -DE` para desarrollo). `pnpm outdated` muestra solo cuatro diferencias, todas deliberadas:
 
 | Paquete | Instalado | `latest` | Motivo |
 |---|---|---|---|
@@ -170,7 +170,7 @@ Ficheros para importar o pegar:
 | [`docs/schema.gql`](docs/schema.gql) | Esquema GraphQL |
 | [`docs/operations.graphql`](docs/operations.graphql) | Las 13 operaciones GraphQL comentadas, listas para GraphiQL |
 
-## Estructura (Screaming Architecture)
+## Estructura del código
 
 ```text
 src/
@@ -178,7 +178,7 @@ src/
 ├── orders/       ídem para pedidos
 ├── auth/         registro, login, JWT (jsonwebtoken), scrypt, guards
 ├── shared/       núcleo compartido: errores, paginación, conexiones, pipeline transversal
-├── config/       entorno validado con Zod (fail fast)
+├── config/       variables de entorno validadas con Zod al arrancar
 ├── app/          composition root: AppModule y PersistenceModule (la Factory de adaptadores)
 ├── generated/    cliente de Prisma (`prisma generate`, no versionado)
 ├── main.ts
@@ -186,7 +186,7 @@ src/
 └── seed.ts       datos de ejemplo (`pnpm db:seed`)
 ```
 
-Las carpetas de primer nivel gritan el negocio (`users`, `orders`, `auth`), no el framework.
+El código se organiza por funcionalidad (`users`, `orders`, `auth`) y no por tipo de fichero, de modo que todo lo relativo a pedidos está en `orders/`. Este enfoque se conoce como *Screaming Architecture*.
 
 ## Autor
 

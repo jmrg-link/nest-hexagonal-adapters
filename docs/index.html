@@ -31,7 +31,7 @@
 <body>
   <header>
     <h1>Nest Hexagonal Adapters</h1>
-    <p>Una API de usuarios y pedidos que funciona igual sobre MongoDB o PostgreSQL, y que responde por REST y por GraphQL sin duplicar ni una regla de negocio. Estos diagramas explican cómo, desde la estructura hasta el último error.</p>
+    <p>API de usuarios y pedidos que funciona con MongoDB o con PostgreSQL y se consulta por REST o por GraphQL. Estos diagramas explican cómo está construida: su estructura, el recorrido de una petición, el ciclo de vida de un pedido y el manejo de errores.</p>
     <nav>
       <a href="api/">API REST (OpenAPI)</a>
       <a href="https://github.com/jmrg-link/nest-hexagonal-adapters">Código en GitHub</a>
@@ -51,7 +51,7 @@
       </a>
       <a class="card" href="diagrams/02-secuencia-rest-crear-pedido.html">
         <img src="diagrams/previews/02-secuencia-rest-crear-pedido.png" alt="Secuencia REST: crear pedido" loading="lazy" />
-        <div><h2><span class="num">02</span>Secuencia REST: crear pedido</h2><p>POST /orders de punta a punta, con las salidas 401, 400 y 422.</p></div>
+        <div><h2><span class="num">02</span>Secuencia REST: crear pedido</h2><p>El recorrido completo de POST /orders, con las respuestas de error 401, 400 y 422.</p></div>
       </a>
       <a class="card" href="diagrams/03-secuencia-graphql-estado-pedido.html">
         <img src="diagrams/previews/03-secuencia-graphql-estado-pedido.png" alt="Secuencia GraphQL: cambiar estado" loading="lazy" />

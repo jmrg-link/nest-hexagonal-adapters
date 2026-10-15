@@ -24,7 +24,7 @@ La idea central: **el negocio no sabe qué base de datos, qué ORM ni qué trans
 | **Decorator** | `@Public()`, `@Roles()`, `@CurrentPrincipal()` | Metadatos declarativos que leen los guards |
 | **Generic type factory** | `Paginated()` en `common.types.ts` | Un tipo GraphQL de página para cualquier entidad |
 
-## La Factory de adaptadores en 15 líneas
+## La Factory de adaptadores
 
 ```ts
 export const USER_REPOSITORY_ADAPTERS: AdapterRegistry<UserRepository> = {
@@ -50,9 +50,9 @@ providers: [
 
 | Opción | A favor | En contra |
 |---|---|---|
-| **Un proyecto, varios adaptadores** (elegida) | Dominio y casos de uso escritos una vez (DRY). Un contrato común demuestra Liskov. Cambiar de BBDD es configuración | Se instalan todas las librerías de BBDD |
+| **Un proyecto, varios adaptadores** (elegida) | Dominio y casos de uso escritos una vez (DRY). Un mismo contrato de tests comprueba que los adaptadores son intercambiables (Liskov). Cambiar de BBDD es configuración | Se instalan todas las librerías de BBDD |
 | Un proyecto por base de datos | Despliegues más ligeros | Se duplica dominio, servicios y tests, y acaban divergiendo |
-| Monorepo: `packages/domain` + `apps/api-mongo`, `apps/api-postgres` | Comparte dominio y despliega por separado | Más infraestructura de build. Es la evolución natural si cada BBDD fuese un servicio distinto |
+| Monorepo: `packages/domain` + `apps/api-mongo`, `apps/api-postgres` | Comparte dominio y despliega por separado | Más infraestructura de build. Tendría sentido si cada base de datos fuese un servicio distinto |
 
 ## SOLID con ejemplos del código
 
@@ -66,13 +66,13 @@ providers: [
 
 - **Un esquema Zod, tres usos**: valida REST (`@Body({ schema })`), valida GraphQL (`ArgsSchemaPipe`) y genera OpenAPI. Los tipos de los DTO se infieren con `z.output`.
 - **Un único filtro de errores** traduce los errores de dominio a Problem Details (REST) o `extensions.code` (GraphQL).
-- **Prisma y Sequelize comparten la misma migración SQL**: una sola fuente de verdad del esquema relacional.
-- **KISS**: paginación por offset, HS256 con secreto compartido, sin CQRS ni eventos. Hay mejoras posibles (keyset pagination, RS256/JWKS, outbox), pero se añaden cuando el problema exista (YAGNI).
+- **Prisma y Sequelize comparten la misma migración SQL**: el esquema relacional se define en un único sitio.
+- **KISS**: paginación por offset, HS256 con secreto compartido, sin CQRS ni eventos. Hay mejoras posibles (keyset pagination, RS256/JWKS, outbox), pero no se han añadido porque hoy no hacen falta (YAGNI).
 
 ## Buenas prácticas incluidas
 
-- **Fail fast**: el entorno se valida con Zod al arrancar (`config/app-config.ts`).
-- **Seguro por defecto**: `JwtAuthGuard` es global; lo público se marca con `@Public()`.
+- **Validación del entorno al arrancar**: si falta una variable o no es válida, la aplicación no arranca (`config/app-config.ts`).
+- **Rutas protegidas por defecto**: `JwtAuthGuard` es global, así que una ruta solo es pública si se marca con `@Public()`.
 - **Dinero en céntimos enteros** y un importe máximo por pedido (invariante del agregado).
 - **IDs y fechas los genera la aplicación**, no la BBDD, así todos los adaptadores se comportan igual.
 - **Agregados referenciados por id**: `orders.user_id` no tiene FK hacia `users` y los pedidos sobreviven a la baja del usuario. Dentro del agregado sí hay FK y `ON DELETE CASCADE` entre `orders` y `order_items`.

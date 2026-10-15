@@ -3,9 +3,9 @@
 > [!TIP]
 > En visual: [arquitectura hexagonal](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/01-arquitectura-hexagonal.html), [secuencia REST](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/02-secuencia-rest-crear-pedido.html), [secuencia GraphQL](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/03-secuencia-graphql-estado-pedido.html) y [ciclo de vida del pedido](https://jmrg-link.github.io/nest-hexagonal-adapters/diagrams/04-ciclo-de-vida-pedido.html) ([vistas previas](diagrams/README.md)).
 
-## Screaming Architecture
+## Organización por funcionalidad
 
-Las carpetas de primer nivel cuentan **de qué va el sistema** (usuarios, pedidos, autenticación). Dentro de cada una se repiten las mismas capas:
+Las carpetas de primer nivel corresponden a las partes del negocio (usuarios, pedidos, autenticación) y no a tipos de fichero. Es lo que se conoce como *Screaming Architecture*. Dentro de cada una se repiten las mismas capas:
 
 ```text
 src/users/
@@ -67,9 +67,9 @@ flowchart LR
   MEM -.implementa.-> PORT
 ```
 
-Las flechas apuntan **hacia el dominio**. El dominio no importa nada de las capas externas; la aplicación solo usa la inyección de dependencias de Nest (`@Injectable`, `@Inject`), una concesión pragmática.
+Las dependencias van siempre hacia el dominio, que no importa nada de las capas externas. La capa de aplicación sí usa la inyección de dependencias de Nest (`@Injectable`, `@Inject`): es la única dependencia del framework que se ha aceptado ahí, porque evita escribir a mano el cableado de servicios.
 
-## Una petición, de punta a punta
+## Recorrido de una petición
 
 ```mermaid
 sequenceDiagram
@@ -90,7 +90,7 @@ sequenceDiagram
   Ctl-->>C: toOrderView(order)
 ```
 
-## Zod como única fuente de verdad
+## Un esquema Zod para REST, GraphQL y OpenAPI
 
 ```ts
 @Post()
@@ -125,7 +125,7 @@ createOrder(@Args('input', { type: () => CreateOrderInput }, new ArgsSchemaPipe(
 
 Los errores siguen **RFC 9457 (Problem Details)**: `{ type, title, status, detail, code, instance, requestId, errors? }`.
 
-## Operaciones GraphQL (espejo de REST)
+## Operaciones GraphQL
 
 | Tipo | Operación | Equivale a |
 |---|---|---|
@@ -168,7 +168,7 @@ stateDiagram-v2
 | Invariantes en BBDD | `min`, `enum` en el esquema | `CHECK`, `ENUM`, `NOT NULL` en la migración |
 | Esquema | En el código (Mongoose) | Migración SQL versionada |
 
-El dominio es idéntico en los dos mundos. Solo cambian los adaptadores, y esa es la tesis del proyecto.
+El dominio es el mismo con MongoDB y con PostgreSQL; lo único que cambia son los adaptadores.
 
 ## Añadir una base de datos nueva (Open/Closed)
 
