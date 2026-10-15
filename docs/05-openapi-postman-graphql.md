@@ -24,6 +24,9 @@ Con la API arrancada en desarrollo también están disponibles en vivo:
 
 En producción Swagger UI, GraphiQL y la introspección se desactivan.
 
+> [!TIP]
+> El contrato también está publicado en [Swagger UI de solo lectura](https://jmrg-link.github.io/nest-hexagonal-adapters/api/), que se genera desde `docs/openapi.json`. Al ser una página estática no hay API detrás, así que las peticiones están desactivadas.
+
 ## Importar en Postman
 
 1. **Import → File → `docs/openapi.json`** (o **Link** con `http://localhost:3000/docs-json`).

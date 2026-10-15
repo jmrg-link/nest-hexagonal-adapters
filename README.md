@@ -18,7 +18,7 @@ y que responde por REST y por GraphQL sin duplicar ni una regla de negocio.
 <img alt="Sequelize 6" src="https://img.shields.io/static/v1?label=Sequelize&message=6&color=52B0E7&logo=sequelize&logoColor=white" />
 <img alt="Licencia MIT" src="https://img.shields.io/static/v1?label=licencia&message=MIT&color=blue" />
 
-**[🌐 Diagramas interactivos](https://jmrg-link.github.io/nest-hexagonal-adapters/)** · **[jmrg.dev](https://jmrg.dev)**
+**[🌐 Diagramas interactivos](https://jmrg-link.github.io/nest-hexagonal-adapters/)** · **[📘 API REST (OpenAPI)](https://jmrg-link.github.io/nest-hexagonal-adapters/api/)** · **[jmrg.dev](https://jmrg.dev)**
 
 [Arranque rápido](#arranque-rápido) · [Explorar la API](#explorar-la-api) · [Diagramas](docs/diagrams/README.md) · [Capturas](docs/capturas/queries-graphql.md) · [Documentación](#documentación) · [Autor](#autor)
 
@@ -65,6 +65,7 @@ Para cambiar de base de datos, edita `DB_DRIVER` en `.env` (`memory | mongoose |
 |---|---|
 | REST con Swagger UI | <http://localhost:3000/docs> |
 | OpenAPI en JSON | <http://localhost:3000/docs-json> |
+| Contrato REST publicado, de solo lectura | <https://jmrg-link.github.io/nest-hexagonal-adapters/api/> |
 | GraphQL con GraphiQL | <http://localhost:3000/graphql> |
 | Operaciones GraphQL paso a paso, con capturas | [docs/capturas/queries-graphql.md](docs/capturas/queries-graphql.md) |
 | Colección y entorno de Postman | [Guía 5](docs/05-openapi-postman-graphql.md#importar-en-postman) |

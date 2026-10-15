@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nest Hexagonal Adapters · API REST</title>
+  <meta name="description" content="Contrato OpenAPI 3.0 de la API REST de usuarios y pedidos: rutas, esquemas y ejemplos." />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.33.2/swagger-ui.css" integrity="sha384-Ov4/wv3j2bmct8cDc5X4ngJZohVPzEmc6uDPH8WeljUxO5vtoykvMEfbu9Vh6RaW" crossorigin="anonymous" />
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .aviso { margin: 0; padding: 12px 24px; background: #fff8c5; border-bottom: 1px solid #d4a72c; color: #3b2300; font-size: 14px; }
+    .aviso a { color: #0969da; }
+  </style>
+</head>
+<body>
+  <p class="aviso">
+    Vista de solo lectura del contrato REST: esta página es estática y no hay API detrás, así que las peticiones están desactivadas.
+    Para probarla, arranca el proyecto en local y abre <code>http://localhost:3000/docs</code>.
+    · <a href="../">Diagramas</a> · <a href="https://github.com/jmrg-link/nest-hexagonal-adapters">Código en GitHub</a>
+  </p>
+  <div id="swagger-ui"></div>
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.33.2/swagger-ui-bundle.js" integrity="sha384-gNnUp++d7WqR9OKX4OMoUmV2w0JxEs1uu6NPXgcynGClIX5DOu6ol4Lp+lINyZcJ" crossorigin="anonymous"></script>
+  <script>
+    window.ui = SwaggerUIBundle({
+      url: '../openapi.json',
+      dom_id: '#swagger-ui',
+      deepLinking: true,
+      docExpansion: 'list',
+      defaultModelsExpandDepth: 1,
+      supportedSubmitMethods: [],
+    });
+  </script>
+</body>
+</html>
