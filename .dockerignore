@@ -1,0 +1,12 @@
+.[!.]*
+node_modules
+dist
+coverage
+test
+docs
+src/generated
+*.tsbuildinfo
+*.log
+Dockerfile
+README.md
+LICENSE
